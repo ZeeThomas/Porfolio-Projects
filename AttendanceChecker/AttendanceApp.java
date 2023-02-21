@@ -1,8 +1,59 @@
+import javafx.application.Application;
+import javafx.event.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
+import javafx.scene.control.*;
+import javafx.geometry.*;
+import javafx.scene.Scene;
+public class AttendanceApp extends Application
+{
+    
+    private TextField AttendanceRecord = new TextField();
+    private TextField AttendanceReport = new TextField();
+    private Button btgetAttendance = new Button("Get Attendance Report");
+    @Override
+    public void start(Stage primaryStage)
+    {
+        GridPane form = new GridPane();
+        form.setHgap(5);
 
-public class AttendanceApp
+        Label lblRecord = new Label("Attendance Record: ");
+        Label lblReport = new Label("Attendance Report");
+        form.add(lblReport, 0, 0);
+        form.add(AttendanceReport, 1,0);
+        form.add(lblRecord, 0,1);
+        form.add(AttendanceRecord, 1, 1);
+        
+        form.add(btgetAttendance,1,2);
+        AttendanceReport.setAlignment(Pos.BOTTOM_RIGHT);
+        AttendanceRecord.setAlignment(Pos.BOTTOM_RIGHT);
+        AttendanceRecord.setEditable(false);
+        GridPane.setHalignment(btgetAttendance,HPos.RIGHT);
+        btgetAttendance.setOnAction(e->createReport());
+        Scene scene = new Scene(form, 400,150);
+        primaryStage.setTitle("Attendance App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+
+
+    private void createReport()
+    {
+        String attendance = (AttendanceReport.getText());
+        Attendance atdobj = new Attendance(attendance);
+        AttendanceRecord.setText(atdobj.checkAttendance());
+    }
+    public static void main(String[] args)
+    {
+      launch(args);
+    }
+}
+
+class Attendance
 {
    private String atd;
-    AttendanceApp(String attendance)
+    Attendance(String attendance)
     {
         atd = attendance;
     }
@@ -35,15 +86,15 @@ public class AttendanceApp
         }
        return false;
     }
-    boolean checkAttendance()
+    String checkAttendance()
     {
         if (isAbsent() == false && isLate() == false)
         {
-            return true;
+            return "Passed";
         }
         else 
         {
-            return false;
+            return "Failed";
         }
     }
     int find(char l)
@@ -59,29 +110,7 @@ public class AttendanceApp
         //System.out.println(l + ":"+ num);
         return num;
     }
-    public static void main(String[] args)
-    {
-        AttendanceApp atd1 = new AttendanceApp("PPALLP");
-        AttendanceApp atd2 = new AttendanceApp("PPALLL");
-       if (atd1.checkAttendance() == true)
-        {
-            System.out.println("Passed");
-        }
-        else 
-        {
-            System.out.println("Failed");
-        }
-        
-        //System.out.println("Late " + atd2.isLate());
-        if (atd2.checkAttendance() == true)
-        {
-            System.out.println("Passed");
-        }
-        else 
-        {
-            System.out.println("Failed");
-        }
-    }
+    
 }
 
 

@@ -1,88 +1,41 @@
-package SnakeGame;
-import javafx.application.*;
-import javafx.scene.shape.*;
-import javafx.scene.*;
-import javafx.geometry.*;
-import java.util.ArrayList;
-import javafx.stage.*;
-import javafx.scene.layout.*;
-import javafx.scene.control.*;
-import javafx.scene.paint.*;
-import javafx.scene.input.*;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
+import java.util.ArrayList;
 
-public class SnakeApp  extends Application
-{
-    Pane pane = new Pane();
-    public Snake s1 = new Snake(250,250);
-    @Override
-    public void start(Stage primaryStage)
-    {
-       Button apple = new Button("Apple");
-       pane.getChildren().add(apple);
-       for(int p = 0; p <= s1.getLength(); p++)
-       {
-        pane.getChildren().add(s1.getBody(p));
-       }
-       apple.setOnAction(e->s1.gotApple());
-     
-       Scene scene = new Scene(pane, 500, 500);
-       primaryStage.setTitle("Snake Game");
-       primaryStage.setScene(scene);
-       primaryStage.show();
-       apple.setOnKeyPressed(e -> { 
-        //System.out.println(e.getCode() + ":" + e.getText());    
-        
-        switch (e.getCode()) 
-        {
-            case DOWN: s1.moveDown();break;
-            case UP:  s1.moveUp(); break;
-            case LEFT: s1.moveLeft(); break;
-            case RIGHT: s1.moveRight(); break;
-            
-             //text.setText(e.getText());
-        } 
-        //System.out.println(s1.getDirection);
-       
-    });
-    /*apple.setOnKeyReleased(e->{
-        if (s1.getDirection() == "DOWN")
-        {
-            keepGoing();
-        }
-        else if (s1.getDirection() == "LEFT")
-        {
-           
-        }
-    });
-   // */
-    apple.requestFocus();
-
-      
-    }
-    
-    public static void main(String[] args)
-    {
-        launch(args);
-    }
-    class Snake extends Pane
+public class SnakePane extends Pane
 {
     int length; 
     Circle head;
-    String direction;
+    String direction = "UP";
     double pastX = 0; 
     double pastY = 0;
     int space = 10; //the spacing between balls
     ArrayList<Circle> body = new ArrayList<Circle>(); 
-    Snake(int x, int y)
+    private Timeline animation;
+    public SnakePane(int x, int y)
     {
+       
         length = 0;
         head = new Circle(x, y, 10);
         head.setStroke(Color.RED);
         body.add(head);
-
+        getChildren().add(head);
+        animation = new Timeline(new KeyFrame(Duration.millis(190), e -> moveSnake()));
+        animation.setCycleCount(Timeline.INDEFINITE);
+        animation.play();
+    }
+    public void play()
+    {
+        animation.play();
+    }
+    public void pause()
+    {
+        animation.pause();
     }
     Circle getHead()
     {
@@ -92,6 +45,29 @@ public class SnakeApp  extends Application
     String getDirection()
     {
         return direction;
+    }
+    void moveSnake(String dir)
+    {
+        direction = dir;
+        switch (direction) 
+        {
+            case "DOWN": this.moveDown();break;
+            case "UP": this.moveUp(); break;
+            case "LEFT":this.moveLeft(); break;
+            case "RIGHT": this.moveRight(); break;
+                //text.setText(e.getText());
+        } 
+    }
+    void moveSnake()
+    {
+        switch (direction) 
+        {
+            case "DOWN": this.moveDown();break;
+            case "UP": this.moveUp(); break;
+            case "LEFT":this.moveLeft(); break;
+            case "RIGHT": this.moveRight(); break;
+                //text.s
+        }
     }
     void moveUp()
     {
@@ -113,7 +89,7 @@ public class SnakeApp  extends Application
                     double newY = b.getCenterY()-(10+space);
                     if (newY < 0)
                     {
-                        newY = pane.getHeight();
+                        newY = 500;
                     }
                     pastX = b.getCenterX();
                     pastY = b.getCenterY();
@@ -152,7 +128,7 @@ public class SnakeApp  extends Application
                     
                     double newX = b.getCenterX();// + space;
                     double newY = b.getCenterY()+(10+space);
-                    if (newY > pane.getHeight())
+                    if (newY > 500)
                     {
                         newY = 0;
                     }
@@ -194,7 +170,7 @@ public class SnakeApp  extends Application
                     double newX = b.getCenterX() - (10+space);// + space;
                     if (newX < 0)
                     {
-                        newX = pane.getWidth();
+                        newX = 500;
                     }
                     double newY = b.getCenterY();
                     pastX = b.getCenterX();
@@ -234,7 +210,7 @@ public class SnakeApp  extends Application
                 {
                     
                     double newX = b.getCenterX() + (10+space);// + space;
-                    if (newX > pane.getWidth())
+                    if (newX >500)
                     {
                         newX = 0+ (10+ space);
                     }
@@ -272,22 +248,11 @@ public class SnakeApp  extends Application
         Circle c1 = new Circle(X,Y, 10);
         c1.setStroke(Color.RED);
         body.add(c1);
-        pane.getChildren().add(getBody(length));
+        getChildren().add(getBody(length));
     }
     Circle getBody(int i)
     {
         Circle h = body.get(i);
         return h;
     }
-}
-/*public abstract class PausableAnimationTimer extends AnimationTimer
-{
-    private long animationStart;
-    @Override
-    public void start()
-    {
-        super.start();
-        restartScheduled = true;
-    }
-    */
 }

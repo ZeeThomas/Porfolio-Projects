@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import java.util.ArrayList;
+import javafx.scene.text.Text;
 
 public class SnakePane extends Pane
 {
@@ -14,7 +15,9 @@ public class SnakePane extends Pane
     String direction = "UP";
     double pastX = 0; 
     double pastY = 0;
-    int space = 10; //the spacing between balls
+    Circle apple;
+    int moveAmount = 1;
+    int space = 20; //the spacing between balls
     ArrayList<Circle> body = new ArrayList<Circle>(); 
     private Timeline animation;
     public SnakePane(int x, int y)
@@ -25,8 +28,10 @@ public class SnakePane extends Pane
         head.setStroke(Color.RED);
         body.add(head);
         getChildren().add(head);
-        animation = new Timeline(new KeyFrame(Duration.millis(190), e -> moveSnake()));
+        createApple();
+        animation = new Timeline(new KeyFrame(Duration.millis(190), e -> checkGame()));
         animation.setCycleCount(Timeline.INDEFINITE);
+        
         animation.play();
     }
     public void play()
@@ -46,6 +51,49 @@ public class SnakePane extends Pane
     {
         return direction;
     }
+    void checkGame()
+    {
+        isGameOver();
+        checkApple();
+        moveSnake();
+    }
+    void isGameOver()
+    {
+        head = getBody(0);
+        if (body.size() != 0)
+        {
+            for(int i = 1; i < body.size(); i++)
+            {
+                Circle b = getBody(i);
+                if (((head.getCenterX() <= (b.getCenterX() + 10)) && (head.getCenterX() >= (b.getCenterX()-10))))
+                {
+                    if((head.getCenterY() <= (b.getCenterY() +10)) && (head.getCenterY() >= (b.getCenterY()-10)))
+                    {
+                        pause();
+                        //create Game Over Screen
+                        Text gameOverText = new Text(250, 250, "Game Is Over");
+                        getChildren().add(gameOverText);
+
+                    }
+                }
+            }
+        }
+       
+    }
+    void checkApple()
+    {
+        //System.out.println("Apple ("+apple.getCenterX() + ","+apple.getCenterX()+")");
+        head = getBody(0);
+        if (((head.getCenterX() <= (apple.getCenterX() + 10)) && (head.getCenterX() >= (apple.getCenterX()-10))))
+        {
+            if((head.getCenterY() <= (apple.getCenterY() +10)) && (head.getCenterY() >= (apple.getCenterY()-10)))
+            {
+                System.out.println("Apple ("+apple.getCenterX() + ","+apple.getCenterY()+")");
+                System.out.println("X: "+ getBody(0).getCenterX() + " Y: " + getBody(0).getCenterY());
+                gotApple();
+            }
+        }
+    }
     void moveSnake(String dir)
     {
         direction = dir;
@@ -60,6 +108,7 @@ public class SnakePane extends Pane
     }
     void moveSnake()
     {
+        //System.out.println("X: "+ getBody(0).getCenterX() + " Y: " + getBody(0).getCenterY());
         switch (direction) 
         {
             case "DOWN": this.moveDown();break;
@@ -86,7 +135,7 @@ public class SnakePane extends Pane
                 {
                     
                     double newX = b.getCenterX();// + space;
-                    double newY = b.getCenterY()-(10+space);
+                    double newY = b.getCenterY()-(moveAmount+space);
                     if (newY < 0)
                     {
                         newY = 500;
@@ -127,7 +176,7 @@ public class SnakePane extends Pane
                 {
                     
                     double newX = b.getCenterX();// + space;
-                    double newY = b.getCenterY()+(10+space);
+                    double newY = b.getCenterY()+(moveAmount+space);
                     if (newY > 500)
                     {
                         newY = 0;
@@ -167,7 +216,7 @@ public class SnakePane extends Pane
                 if (i == 0)
                 {
                     
-                    double newX = b.getCenterX() - (10+space);// + space;
+                    double newX = b.getCenterX() - (moveAmount+space);// + space;
                     if (newX < 0)
                     {
                         newX = 500;
@@ -209,7 +258,7 @@ public class SnakePane extends Pane
                 if (i == 0)
                 {
                     
-                    double newX = b.getCenterX() + (10+space);// + space;
+                    double newX = b.getCenterX() + (moveAmount+space);// + space;
                     if (newX >500)
                     {
                         newX = 0+ (10+ space);
@@ -241,6 +290,7 @@ public class SnakePane extends Pane
     void gotApple()
     {
         System.out.println("Got apple");
+        getChildren().remove(apple);
         length++;
         Circle inFront = body.get(length-1);
         double X = inFront.getCenterX();
@@ -249,10 +299,21 @@ public class SnakePane extends Pane
         c1.setStroke(Color.RED);
         body.add(c1);
         getChildren().add(getBody(length));
+        createApple();
     }
     Circle getBody(int i)
     {
         Circle h = body.get(i);
         return h;
+    }
+    void createApple()
+    {
+        int max = 490;
+        int min = 10;
+        int appleX = (int)(Math.random()*(max - min +1)+min);
+        int appleY = (int)(Math.random()*(max - min +1)+min);
+        apple = new Circle(appleX, appleY, 10);
+        apple.setFill(Color.RED);
+        getChildren().add(apple);
     }
 }

@@ -12,9 +12,7 @@ public class SnakeApp  extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        VBox layout = new VBox(15);
        SnakePane s1 = new SnakePane(250,250);
-       layout.getChildren().add(s1);
        s1.setOnKeyPressed(e->{
         if(e.getCode() == KeyCode.UP)
         {
@@ -33,7 +31,7 @@ public class SnakeApp  extends Application
             s1.moveRight();
         }
        });
-       Scene scene = new Scene(layout, 500, 500);
+       Scene scene = new Scene(s1, 500, 500);
        primaryStage.setTitle("Snake Game");
        primaryStage.setScene(scene);
        primaryStage.show();
@@ -43,5 +41,10 @@ public class SnakeApp  extends Application
     public static void main(String[] args)
     {
         launch(args);
+    }
+
+    public void makeApple()
+    {
+
     }
 }

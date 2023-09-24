@@ -8,7 +8,6 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import javafx.scene.text.*;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 
 public class SnakePane extends Pane
 {
@@ -37,10 +36,9 @@ public class SnakePane extends Pane
     }
     public void play()
     {
-        System.out.print("This is play");
         animation = new Timeline(new KeyFrame(Duration.millis(190), e -> checkGame()));
         animation.setCycleCount(Timeline.INDEFINITE);
-        //animation.play();
+        animation.play();
        
     }
     public void pause()
@@ -54,37 +52,16 @@ public class SnakePane extends Pane
     //void check()
     String getDirection()
     {
-
         return direction;
     }
-    void setDirection(KeyEvent e)
+    void setDirection(String dir)
     {
-        //direction = dir;
-        setOnKeyPressed(e->{
-        if(e.getCode() == KeyCode.UP)
-        {
-           direction = "UP";
-        }
-        else if (e.getCode() == KeyCode.DOWN)
-        {
-          direction = "DOWN";
-        }
-        else if (e.getCode() == KeyCode.LEFT)
-        {
-           direction = "LEFT";
-        }
-        else if (e.getCode() == KeyCode.RIGHT)
-        {
-           direction = "RIGHT";
-        }
-        System.out.println("We set the direction");
-       });
-      
+        direction = dir;
     }
     void checkGame()
     {
         isGameOver();
-        setDirection();
+        System.out.println("Check Game Over");
         checkApple();
         moveSnake();
     }
@@ -127,6 +104,7 @@ public class SnakePane extends Pane
     }
     void moveSnake(String dir)
     {
+        direction = dir;
         switch (direction) 
         {
             case "DOWN": this.moveDown();break;
@@ -138,15 +116,13 @@ public class SnakePane extends Pane
     }
     void moveSnake()
     {
-        System.out.println("The snake moved");
         //System.out.println("X: "+ getBody(0).getCenterX() + " Y: " + getBody(0).getCenterY());
-        
-        //System.out.println(direction);
+        System.out.println(direction);
         switch (direction) 
         {
-            case "DOWN": this.moveDown();System.out.println("Down");break;
+            case "DOWN": this.moveDown();break;
             case "UP": this.moveUp(); break;
-            case "LEFT":this.moveLeft();System.out.println("Left"); break;
+            case "LEFT":this.moveLeft(); break;
             case "RIGHT": this.moveRight(); break;
                 //text.s
         }
@@ -272,7 +248,7 @@ public class SnakePane extends Pane
                 }
                 
             }
-        
+            System.out.println("Left");
         }
     }
     void moveRight()
@@ -355,24 +331,20 @@ public class SnakePane extends Pane
         Text gameOverText = new Text(250, 250, "Game Is Over");
         gameOverText.setFont(new Font(20));
         gameOverText.setFill(Color.RED);
-        Button playAgainBtn = new Button("Play Again?");
-        playAgainBtn.setLayoutX(250);
-        playAgainBtn.setLayoutY(260);
         getChildren().add(gameOverText);
-        getChildren().add(playAgainBtn);
-        playAgainBtn.setOnAction(e->restart());
+
     }
     void restart()
     {
         getChildren().clear();
         length = 0;
-        head = new Circle(250, 250, 10);
-        head.setStroke(Color.RED);
+        //head = new Circle(250, 250, 10);
+        //head.setStroke(Color.RED);
         body.clear();
         body.add(head);
         direction = "UP";
         getChildren().add(head);
         createApple();
-        this.play();
+        play();
     }
 }

@@ -13,8 +13,24 @@ public class SnakeApp  extends Application
     public void start(Stage primaryStage)
     {
        SnakePane s1 = new SnakePane(250,250);
-       s1.play();
-       
+       s1.setOnKeyPressed(e->{
+        if(e.getCode() == KeyCode.UP)
+        {
+            s1.moveUp();
+        }
+        else if (e.getCode() == KeyCode.DOWN)
+        {
+            s1.moveDown();
+        }
+        else if (e.getCode() == KeyCode.LEFT)
+        {
+            s1.moveLeft();
+        }
+        else if (e.getCode() == KeyCode.RIGHT)
+        {
+            s1.moveRight();
+        }
+       });
        Scene scene = new Scene(s1, 500, 500);
        primaryStage.setTitle("Snake Game");
        primaryStage.setScene(scene);
@@ -26,6 +42,4 @@ public class SnakeApp  extends Application
     {
         launch(args);
     }
-
-    
 }
